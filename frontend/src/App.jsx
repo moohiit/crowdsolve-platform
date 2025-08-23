@@ -1,47 +1,94 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import AuthLayout from "./layouts/AuthLayout";
-import MainLayout from "./layouts/MainLayout";
+// App.js
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, logout } from './store/slices/authSlice';
+import Layout from './components/common/Layout';
+import AuthLayout from './components/auth/AuthLayout';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import Login from './components/auth/Login';
+import Signup from './components/auth/Signup';
+import ProblemList from './components/problems/ProblemList';
+import ProblemDetail from './components/problems/ProblemDetail';
+import CreateProblem from './components/problems/CreateProblem';
+import MyProblems from './components/problems/MyProblems'; // Import the new component
 
-// Pages
-import Home from "./pages/Home";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import ProblemsPage from "./pages/ProblemsPage";
-import ProblemPage from "./pages/ProblemPage";
-
-function PrivateRoute({ children }) {
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const location = useLocation();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  return children;
-}
-
-export default function App() {
-  return (
-    <Routes>
-      {/* Auth Layout */}
-      <Route element={<AuthLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-      </Route>
-
-      {/* Main Layout */}
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/problems" element={<ProblemsPage />} />
-        <Route
-          path="/problems/:id"
-          element={
-            <PrivateRoute>
-              <ProblemPage />
-            </PrivateRoute>
+function App() {
+  const dispatch = useDispatch();
+  const { isAuthenticated, token } = useSelector(state => state.auth);
+  
+  // Verify token on app load and page refresh
+  useEffect(() => {
+    const verifyToken = async () => {
+      if (token) {
+        try {
+          const response = await fetch('/api/auth/me', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+            credentials: 'include',
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            dispatch(loginSuccess({
+              user: data.user,
+              token: token,
+            }));
+          } else {
+            dispatch(logout());
           }
-        />
-      </Route>
-    </Routes>
+        } catch (error) {
+          console.error('Token verification failed:', error);
+          dispatch(logout());
+        }
+      }
+    };
+    
+    verifyToken();
+  }, [dispatch, token]);
+  
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          {/* Auth routes */}
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
+          
+          {/* Protected routes */}
+          <Route element={<Layout />}>
+            <Route path="/" element={<Navigate to="/problems" replace />} />
+            <Route path="/problems" element={<ProblemList />} />
+            <Route path="/problems/:id" element={<ProblemDetail />} />
+            <Route 
+              path="/create-problem" 
+              element={
+                <ProtectedRoute>
+                  <CreateProblem />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/my-problems" 
+              element={
+                <ProtectedRoute>
+                  <MyProblems />
+                </ProtectedRoute>
+              } 
+            />
+          </Route>
+          
+          {/* Fallback route */}
+          <Route path="*" element={<Navigate to="/problems" replace />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
+
+export default App;
