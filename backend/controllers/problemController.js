@@ -32,23 +32,74 @@ export const createProblem = async (req, res, next) => {
   }
 };
 
-export const getProblems = async (req, res, next) => {
+export const getProblems = async (req, res, next) => { 
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    // Get problems with user info
     const problems = await Problem.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("user", "name");
+
+    // Get problem IDs
+    const problemIds = problems.map((p) => p._id);
+
+    // Get solutions count
+    const solutionsCounts = await Solution.aggregate([
+      { $match: { problem: { $in: problemIds } } },
+      { $group: { _id: "$problem", count: { $sum: 1 } } }
+    ]);
+
+    // Get upvotes count
+    const upvotesCounts = await Solution.aggregate([
+      { $match: { problem: { $in: problemIds } } },
+      { 
+        $project: { 
+          problem: 1, 
+          upvotesCount: { $size: { $ifNull: ["$upvotes", []] } } 
+        } 
+      },
+      { $group: { _id: "$problem", totalUpvotes: { $sum: "$upvotesCount" } } }
+    ]);
+
+    // Create maps
+    const solutionsCountMap = {};
+    solutionsCounts.forEach(item => {
+      solutionsCountMap[item._id.toString()] = item.count;
+    });
+
+    const upvotesCountMap = {};
+    upvotesCounts.forEach(item => {
+      upvotesCountMap[item._id.toString()] = item.totalUpvotes;
+    });
+
+    // Add counts
+    const problemsWithCounts = problems.map((problem) => {
+      return {
+        ...problem.toObject(),
+        solutionsCount: solutionsCountMap[problem._id.toString()] || 0,
+        totalUpvotes: upvotesCountMap[problem._id.toString()] || 0,
+      };
+    });
+
     const total = await Problem.countDocuments();
-    res.status(200).json({ success:true, problems, total, page, pages: Math.ceil(total / limit) });
+
+    res.status(200).json({
+      success: true,
+      problems: problemsWithCounts,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    });
   } catch (err) {
     next(err);
   }
 };
+
 
 export const getProblem = async (req, res, next) => {
   try {
@@ -71,17 +122,54 @@ export const getUserProblems = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    // Get problems with user info
     const problems = await Problem.find({ user: req.user._id })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("user", "name");
     
+    // Get problem IDs
+    const problemIds = problems.map(problem => problem._id);
+    
+    // Get solutions count for all problems in one query
+    const solutionsCounts = await Solution.aggregate([
+      { $match: { problem: { $in: problemIds } } },
+      { $group: { _id: "$problem", count: { $sum: 1 } } }
+    ]);
+    
+    // Get total upvotes for all problems in one query
+    const upvotesCounts = await Solution.aggregate([
+      { $match: { problem: { $in: problemIds } } },
+      { $project: { problem: 1, upvotesCount: { $size: { $ifNull: ["$upvotes", []] } } } },
+      { $group: { _id: "$problem", totalUpvotes: { $sum: "$upvotesCount" } } }
+    ]);
+    
+    // Create maps for easy lookup
+    const solutionsCountMap = {};
+    solutionsCounts.forEach(item => {
+      solutionsCountMap[item._id.toString()] = item.count;
+    });
+    
+    const upvotesCountMap = {};
+    upvotesCounts.forEach(item => {
+      upvotesCountMap[item._id.toString()] = item.totalUpvotes;
+    });
+    
+    // Add counts to problems
+    const problemsWithCounts = problems.map(problem => {
+      return {
+        ...problem.toObject(),
+        solutionsCount: solutionsCountMap[problem._id.toString()] || 0,
+        totalUpvotes: upvotesCountMap[problem._id.toString()] || 0
+      };
+    });
+    
     const total = await Problem.countDocuments({ user: req.user._id });
     
     res.status(200).json({ 
       success: true, 
-      problems, 
+      problems: problemsWithCounts, 
       total, 
       page, 
       pages: Math.ceil(total / limit) 
