@@ -50,7 +50,7 @@ crowdsolve-platform/
 
 1. **Clone the repo:**
    ```sh
-   git clone <repo-url>
+   git clone [<repo-url>](https://github.com/moohiit/crowdsolve-platform.git)
    cd crowdsolve-platform/backend
    ```
 
