@@ -59,3 +59,11 @@ app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+PORT=5000
+MONGO_URI=mongodb+srv://mohitpateledu:mohitpateledu@cluster0.9wzdt8t.mongodb.net/crowdsolve
+JWT_SECRET=this_is_a_secret_key45hjdsjdhfs
+NODE_ENV=development
+CLIENT_URL=http://localhost:5173
+
+NODE_ENV=development
+VITE_BACKEND_URL=http://localhost:5000
