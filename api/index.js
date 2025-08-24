@@ -3,11 +3,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import problemRoutes from "./routes/problemRoutes.js";
-import solutionRoutes from "./routes/solutionRoutes.js";
-import errorMiddleware from "./middleware/errorMiddleware.js";
+import connectDB from "../backend/config/db.js";
+import authRoutes from "../backend/routes/authRoutes.js";
+import problemRoutes from "../backend/routes/problemRoutes.js";
+import solutionRoutes from "../backend/routes/solutionRoutes.js";
+import errorMiddleware from "../backend/middleware/errorMiddleware.js";
 import path from 'path';
 dotenv.config();
 
