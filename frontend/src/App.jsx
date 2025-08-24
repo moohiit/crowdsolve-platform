@@ -1,11 +1,11 @@
 // App.js
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess, logout } from './store/slices/authSlice';
 import Layout from './components/common/Layout';
-import AuthLayout from './components/auth/AuthLayout';
+import AuthLayout from './layouts/AuthLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
