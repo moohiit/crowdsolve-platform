@@ -20,9 +20,9 @@ const ProblemDetail = () => {
   const fetchProblem = async () => {
     dispatch(startLoading());
     try {
-      const response = await fetch(`http://localhost:5000/api/problems/${id}`);
+      const response = await fetch(`/api/problems/${id}`);
       const data = await response.json();
-      
+
       if (data.success) {
         dispatch(setProblem(data.problem));
       } else {
@@ -35,9 +35,9 @@ const ProblemDetail = () => {
 
   const fetchSolutions = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/solutions/${id}`);
+      const response = await fetch(`/api/solutions/${id}`);
       const data = await response.json();
-      
+
       if (data.success) {
         dispatch(setSolutions(data.solutions));
       }
@@ -79,7 +79,7 @@ const ProblemDetail = () => {
         </svg>
         Back to Problems
       </Link>
-      
+
       <div className="card mb-8">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-white">{currentProblem.title}</h1>
@@ -87,7 +87,7 @@ const ProblemDetail = () => {
             {new Date(currentProblem.createdAt).toLocaleDateString()}
           </span>
         </div>
-        
+
         <div className="flex items-center text-sm text-gray-400 mb-6">
           <div className="flex items-center mr-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -103,26 +103,26 @@ const ProblemDetail = () => {
             {currentProblem.location}
           </div>
         </div>
-        
-        {currentProblem.imageUrl && (
+
+        {currentProblem?.image?.url && (
           <div className="mb-6 rounded-lg overflow-hidden">
-            <img 
-              src={`http://localhost:5000${currentProblem.imageUrl}`} 
+            <img
+              src={`${currentProblem?.image?.url}`}
               alt={currentProblem.title}
               className="w-full h-64 object-cover"
             />
           </div>
         )}
-        
+
         <div className="prose prose-invert max-w-none">
           <h3 className="text-lg font-semibold text-white mb-2">Description</h3>
           <p className="text-gray-300 whitespace-pre-wrap">{currentProblem.description}</p>
         </div>
       </div>
-      
+
       <div className="card">
         <h2 className="text-xl font-bold text-white mb-6">Suggested Solutions ({solutions.length})</h2>
-        
+
         {isAuthenticated ? (
           <CreateSolution problemId={id} onSolutionAdded={fetchSolutions} />
         ) : (
@@ -134,7 +134,7 @@ const ProblemDetail = () => {
             </p>
           </div>
         )}
-        
+
         <SolutionList solutions={solutions} problemId={id} />
       </div>
     </div>

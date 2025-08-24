@@ -12,7 +12,7 @@ const CommentList = ({ solutionId }) => {
   const fetchComments = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/solutions/${solutionId}/comments`
+        `/api/solutions/${solutionId}/comments`
       );
       const data = await response.json();
       

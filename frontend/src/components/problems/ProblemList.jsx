@@ -18,10 +18,10 @@ const ProblemList = () => {
     dispatch(startLoading());
     try {
       const response = await fetch(
-        `http://localhost:5000/api/problems?page=${page}&limit=10`
+        `/api/problems?page=${page}&limit=10`
       );
       const data = await response.json();
-      
+
       if (data.success) {
         if (page === 1) {
           dispatch(setProblems(data.problems));
@@ -70,7 +70,7 @@ const ProblemList = () => {
           Report Problem
         </Link>
       </div>
-      
+
       {problems.length === 0 ? (
         <div className="card text-center py-12">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,10 +87,10 @@ const ProblemList = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {problems.map(problem => (
               <div key={problem._id} className="card group hover:border-primary-500/30 transition-all duration-300 animate-slide-up">
-                {problem.imageUrl && (
+                {problem?.image?.url && (
                   <div className="relative h-48 overflow-hidden rounded-lg mb-4">
-                    <img 
-                      src={`http://localhost:5000${problem.imageUrl}`} 
+                    <img
+                      src={`${problem?.image?.url}`}
                       alt={problem.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -102,7 +102,7 @@ const ProblemList = () => {
                   <p className="text-gray-400 text-sm mb-4 line-clamp-2">
                     {problem.description}
                   </p>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center text-sm text-gray-500">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -110,14 +110,23 @@ const ProblemList = () => {
                       </svg>
                       {problem.location}
                     </div>
+                    
                     <span className="text-xs text-gray-500">
                       {new Date(problem.createdAt).toLocaleDateString()}
                     </span>
                   </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">
+                      {problem.solutionsCount || 0} solutions
+                    </span>
+                    <span className="text-gray-400">
+                      {problem.totalUpvotes || 0} upvotes
+                    </span>
+                  </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-dark-700/50">
-                  <Link 
-                    to={`/problems/${problem._id}`} 
+                <div className="mt-4 pt-4 border-t border-dark-700/50 space-x-2">
+                  <Link
+                    to={`/problems/${problem._id}`}
                     className="btn-secondary w-full text-center block"
                   >
                     View Details & Solutions
@@ -126,11 +135,11 @@ const ProblemList = () => {
               </div>
             ))}
           </div>
-          
+
           {hasMore && (
             <div className="text-center">
-              <button 
-                onClick={loadMore} 
+              <button
+                onClick={loadMore}
                 disabled={loading}
                 className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >

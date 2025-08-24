@@ -15,14 +15,18 @@ export const createProblem = async (req, res, next) => {
       return res.status(400).json({ success:false, message: error.details[0].message });
 
     const { title, description, location } = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const { path, filename } = req.file;
+    const image = {
+      url: path, // secure_url from Cloudinary
+      public_id: filename,
+    };
 
     const problem = new Problem({
       user: req.user._id, // From auth middleware
       title,
       description,
       location,
-      imageUrl,
+      image,
     });
     await problem.save();
 

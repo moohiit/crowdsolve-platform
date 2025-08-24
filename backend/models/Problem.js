@@ -5,7 +5,10 @@ const problemSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   location: { type: String, required: true }, // Could be geoJSON in future
-  imageUrl: { type: String }, // URL to uploaded image
+  image: { 
+    url: String, // URL to uploaded image
+    public_id: String, // Public ID from Cloudinary
+   }, 
   createdAt: { type: Date, default: Date.now },
 });
 

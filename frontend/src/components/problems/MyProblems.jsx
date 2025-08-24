@@ -164,10 +164,10 @@ const MyProblems = () => {
                 key={problem._id}
                 className="card group hover:border-primary-500/30 transition-all duration-300 animate-slide-up"
               >
-                {problem.imageUrl && (
+                {problem?.image?.url && (
                   <div className="relative h-48 overflow-hidden rounded-lg mb-4">
                     <img
-                      src={`http://localhost:5000${problem.imageUrl}`}
+                      src={`${problem?.image?.url}`}
                       alt={problem.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -205,7 +205,7 @@ const MyProblems = () => {
                       </svg>
                       {problem.location}
                     </div>
-                    <span className="text-xs">
+                    <span className="text-xs text-gray-500">
                       {new Date(problem.createdAt).toLocaleDateString()}
                     </span>
                   </div>

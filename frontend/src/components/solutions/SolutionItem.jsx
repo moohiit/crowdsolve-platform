@@ -23,7 +23,7 @@ const SolutionItem = ({ solution, problemId }) => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `http://localhost:5000/api/solutions/${solution._id}/upvote`,
+        `/api/solutions/${solution._id}/upvote`,
         {
           method: 'PUT',
           headers: {
@@ -57,7 +57,7 @@ const SolutionItem = ({ solution, problemId }) => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `http://localhost:5000/api/solutions/${solution._id}/comments`,
+        `/api/solutions/${solution._id}/comments`,
         {
           method: 'POST',
           headers: {
