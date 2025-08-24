@@ -1,4 +1,3 @@
-// App.js
 import { useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
