@@ -46,7 +46,7 @@ const MyProblems = () => {
         }
         setHasMore(data.page < data.pages);
       } else {
-        dispatch(setError("Failed to fetch your problems"));
+        dispatch(setError(data.message || "Failed to fetch your problems"));
       }
     } catch (error) {
       dispatch(setError("Network error. Please try again."));
@@ -111,7 +111,7 @@ const MyProblems = () => {
     <div className="max-w-7xl mx-auto px-4 py-8 mt-16">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">My Reported Problems</h1>
-        <Link to="/create-problem" className="btn-primary">
+        <Link to="/create-problem" className="btn-save flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 mr-2"
@@ -152,7 +152,7 @@ const MyProblems = () => {
           <p className="text-gray-400 mb-6">
             Start by reporting a problem in your community
           </p>
-          <Link to="/create-problem" className="btn-primary">
+          <Link to="/create-problem" className="btn-save">
             Report Your First Problem
           </Link>
         </div>
@@ -221,7 +221,7 @@ const MyProblems = () => {
                 <div className="mt-4 pt-4 border-t border-dark-700/50 flex space-x-2">
                   <Link
                     to={`/problems/${problem._id}`}
-                    className="btn-secondary flex-1 text-center"
+                    className="btn-warning flex-1 text-center"
                   >
                     View Details
                   </Link>

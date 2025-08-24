@@ -60,7 +60,7 @@ const ProblemDetail = () => {
         <div className="bg-red-500/10 border border-red-500/20 text-red-300 px-4 py-3 rounded-lg text-sm mb-4">
           {error}
         </div>
-        <Link to="/problems" className="btn-primary">
+        <Link to="/problems" className="btn-save">
           Back to Problems
         </Link>
       </div>
@@ -73,7 +73,7 @@ const ProblemDetail = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 mt-16">
-      <Link to="/problems" className="inline-flex items-center text-primary-500 hover:text-primary-400 mb-6 transition-colors">
+      <Link to="/problems" className="inline-flex items-center text-primary-500 hover:text-primary-400 mb-6 transition-colors btn-save">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
@@ -126,12 +126,13 @@ const ProblemDetail = () => {
         {isAuthenticated ? (
           <CreateSolution problemId={id} onSolutionAdded={fetchSolutions} />
         ) : (
-          <div className="bg-dark-700/50 rounded-lg p-4 mb-6 text-center">
-            <p className="text-gray-300">
-              <Link to="/login" state={{ from: { pathname: `/problems/${id}` } }} className="text-primary-500 hover:text-primary-400 font-medium">
+          <div className="bg-dark-700/50 rounded-lg p-4 mb-4 text-center">
+              <p className="text-gray-300 mb-2">
+              <Link to="/login" state={{ from: { pathname: `/problems/${id}` } }} className="text-primary-500 hover:text-primary-400 font-medium btn-warning">
                 Login
-              </Link> to suggest a solution
+                </Link>
             </p>
+              <p className='text-gray-400 text-sm mt-4 text-center mb-2'>to suggest a solution</p>
           </div>
         )}
 

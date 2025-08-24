@@ -1,5 +1,6 @@
 // App.js
 import React, { useEffect } from 'react';
+import {jwtDecode} from 'jwt-decode';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess, logout } from './store/slices/authSlice';
@@ -15,13 +16,20 @@ import MyProblems from './components/problems/MyProblems'; // Import the new com
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, token } = useSelector(state => state.auth);
+  const { token } = useSelector(state => state.auth);
   
   // Verify token on app load and page refresh
   useEffect(() => {
     const verifyToken = async () => {
       if (token) {
         try {
+          const decoded = jwtDecode(token);
+          const currentTime = Date.now() / 1000;
+          if (decoded.exp < currentTime) {
+            // Token expired
+            dispatch(logout());
+            return;
+          }
           const response = await fetch('/api/auth/me', {
             method: 'GET',
             headers: {
@@ -48,7 +56,7 @@ function App() {
     };
     
     verifyToken();
-  }, [dispatch, token]);
+  }, [dispatch, token,]);
   
   return (
     <Router>

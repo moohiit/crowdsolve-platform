@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { addProblem, setError, clearError } from '../../store/slices/problemSlice';
+import { addProblem, setError, clearError, startLoading } from '../../store/slices/problemSlice';
 
 const CreateProblem = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +18,6 @@ const CreateProblem = () => {
   const navigate = useNavigate();
   const { loading, error } = useSelector(state => state.problems);
   const { isAuthenticated } = useSelector(state => state.auth);
-  
   if (!isAuthenticated) {
     navigate('/login', { state: { from: { pathname: '/create-problem' } } });
     return null;
@@ -50,8 +49,7 @@ const CreateProblem = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(clearError());
-    
+    dispatch(startLoading());
     const submitData = new FormData();
     submitData.append('title', formData.title);
     submitData.append('description', formData.description);
@@ -145,10 +143,10 @@ const CreateProblem = () => {
           </div>
           
           <div>
-            <label htmlFor="image" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="image" className="block text-sm font-medium text-gray-300 mb-3">
               Image (Optional)
             </label>
-            <div className="mt-1 flex items-center space-x-4">
+            <div className="mt-3 flex items-center space-x-4">
               <label className="cursor-pointer">
                 <span className="btn-secondary">Choose Image</span>
                 <input
@@ -181,14 +179,14 @@ const CreateProblem = () => {
             <button
               type="button"
               onClick={() => navigate('/problems')}
-              className="btn-secondary"
+              className="btn-cancel"
             >
               Cancel
             </button>
             <button 
               type="submit" 
               disabled={loading}
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-save disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center">

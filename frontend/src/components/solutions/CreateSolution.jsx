@@ -72,7 +72,7 @@ const CreateSolution = ({ problemId, onSolutionAdded }) => {
         <button 
           type="submit" 
           disabled={submitting}
-          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-save disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <div className="flex items-center">

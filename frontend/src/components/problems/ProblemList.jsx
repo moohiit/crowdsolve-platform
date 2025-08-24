@@ -30,7 +30,7 @@ const ProblemList = () => {
         }
         setHasMore(data.page < data.pages);
       } else {
-        dispatch(setError('Failed to fetch problems'));
+        dispatch(setError(data.message || 'Failed to fetch problems'));
       }
     } catch (error) {
       dispatch(setError('Network error. Please try again.'));
@@ -63,7 +63,7 @@ const ProblemList = () => {
     <div className="max-w-7xl mx-auto px-4 py-8 mt-16">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Community Problems</h1>
-        <Link to="/create-problem" className="btn-primary">
+        <Link to="/create-problem" className="btn-save box-border flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
@@ -78,7 +78,7 @@ const ProblemList = () => {
           </svg>
           <h3 className="text-xl font-medium text-white mb-2">No problems reported yet</h3>
           <p className="text-gray-400 mb-6">Be the first to report a community problem</p>
-          <Link to="/create-problem" className="btn-primary">
+          <Link to="/create-problem" className="btn-save">
             Report First Problem
           </Link>
         </div>
@@ -127,7 +127,7 @@ const ProblemList = () => {
                 <div className="mt-4 pt-4 border-t border-dark-700/50 space-x-2">
                   <Link
                     to={`/problems/${problem._id}`}
-                    className="btn-secondary w-full text-center block"
+                    className="btn-warning w-full text-center block"
                   >
                     View Details & Solutions
                   </Link>

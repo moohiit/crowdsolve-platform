@@ -73,6 +73,120 @@ body {
   outline-offset: 2px;
 }
 
+/* Save Button */
+.btn-save {
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* blue gradient */
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+}
+.btn-save:hover {
+  background: linear-gradient(to right, #2563eb, #1e40af);
+  transform: scale(1.05);
+}
+.btn-save:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Cancel Button */
+.btn-cancel {
+  background: linear-gradient(to right, #ef4444, #b91c1c); /* red gradient */
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+}
+.btn-cancel:hover {
+  background: linear-gradient(to right, #dc2626, #991b1b);
+  transform: scale(1.05);
+}
+.btn-cancel:focus {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+/* Delete Button */
+.btn-delete {
+  background: linear-gradient(to right, #f43f5e, #be123c); /* rose gradient */
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(244, 63, 94, 0.3);
+}
+.btn-delete:hover {
+  background: linear-gradient(to right, #e11d48, #9f1239);
+  transform: scale(1.05);
+}
+.btn-delete:focus {
+  outline: 2px solid #f43f5e;
+  outline-offset: 2px;
+}
+
+/* Warning Button */
+.btn-warning {
+  background: linear-gradient(to right, #facc15, #ca8a04); /* yellow gradient */
+  color: #1e293b; /* dark text for contrast */
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.3);
+}
+.btn-warning:hover {
+  background: linear-gradient(to right, #eab308, #a16207);
+  transform: scale(1.05);
+}
+.btn-warning:focus {
+  outline: 2px solid #facc15;
+  outline-offset: 2px;
+}
+
+/* Edit Button */
+.btn-edit {
+  background: linear-gradient(to right, #f59e0b, #d97706); /* amber gradient */
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(251, 191, 36, 0.3);
+}
+.btn-edit:hover {
+  background: linear-gradient(to right, #d97706, #b45309);
+  transform: scale(1.05);
+}
+.btn-edit:focus {
+  outline: 2px solid #fbbf24; /* amber-400 */
+  outline-offset: 2px;
+}
+
+/* Vote Button */
+.btn-vote {
+  background: linear-gradient(to right, #9333ea, #7e22ce); /* purple gradient */
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px; /* pill shape */
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.3);
+}
+.btn-vote:hover {
+  background: linear-gradient(to right, #7e22ce, #6b21a8);
+  transform: scale(1.08);
+}
+.btn-vote:focus {
+  outline: 2px solid #a855f7; /* purple-500 */
+  outline-offset: 2px;
+}
+
 .card {
   background-color: rgba(30, 41, 59, 0.7);
   -webkit-backdrop-filter: blur(10px);

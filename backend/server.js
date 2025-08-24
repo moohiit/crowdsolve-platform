@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import problemRoutes from "./routes/problemRoutes.js";
 import solutionRoutes from "./routes/solutionRoutes.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
+import path from 'path';
 dotenv.config();
 
 const app = express();
@@ -27,6 +28,12 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 })); // Rate limiting
 
+// Serve static assets if in production
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'frontend/dist', 'index.html'));
+});
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/problems", problemRoutes); // Pass upload middleware to routes needing it

@@ -146,17 +146,19 @@ const SolutionItem = ({ solution, problemId }) => {
               <button 
                 type="submit" 
                 disabled={submittingComment}
-                className="btn-secondary mt-2 text-sm py-1 px-3"
+                className="btn-warning mt-2 text-sm py-1 px-3"
               >
                 {submittingComment ? 'Posting...' : 'Post Comment'}
               </button>
             </form>
-          ) : (
-            <p className="text-gray-400 text-sm mt-4 text-center">
-              <a href="/login" className="text-primary-500 hover:text-primary-400">
+          ) : ( <>
+            <p className="text-gray-400 text-sm mt-4 text-center mb-2">
+              <a href="/login" className="text-primary-500 hover:text-primary-400 btn-warning">
                 Login
-              </a> to comment on this solution
-            </p>
+                </a>
+              </p>
+              <p className='text-gray-400 text-sm mt-4 text-center mb-2'>to comment on this solution</p>
+            </>
           )}
         </div>
       )}
