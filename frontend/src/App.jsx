@@ -12,10 +12,13 @@ import ProblemList from './components/problems/ProblemList';
 import ProblemDetail from './components/problems/ProblemDetail';
 import CreateProblem from './components/problems/CreateProblem';
 import MyProblems from './components/problems/MyProblems'; // Import the new component
+import Dashboard from './components/dashboard/Dashboard';
+import UserDashboard from './components/dashboard/UserDashboard';
 
 function App() {
   const dispatch = useDispatch();
   const { token } = useSelector(state => state.auth);
+  const { user } = useSelector(state => state.auth);
   
   // Verify token on app load and page refresh
   useEffect(() => {
@@ -69,7 +72,12 @@ function App() {
           
           {/* Protected routes */}
           <Route element={<Layout />}>
-            <Route path="/" element={<Navigate to="/problems" replace />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                {user && user.role === 'admin' ? <Dashboard /> : <UserDashboard />}
+              </ProtectedRoute>
+            } />
             <Route path="/problems" element={<ProblemList />} />
             <Route path="/problems/:id" element={<ProblemDetail />} />
             <Route 

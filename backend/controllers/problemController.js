@@ -193,7 +193,7 @@ export const deleteProblem = async (req, res, next) => {
     }
     
     // Check if the user owns the problem
-    if (problem.user.toString() !== req.user._id.toString()) {
+    if (problem.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: "Not authorized to delete this problem" });
     }
     

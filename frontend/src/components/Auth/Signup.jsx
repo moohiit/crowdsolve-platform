@@ -9,6 +9,7 @@ const Signup = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'user',
   });
   
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const Signup = () => {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          role: formData.role,
         }),
         credentials: 'include',
       });
@@ -158,6 +160,16 @@ const Signup = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
               />
+            </div>
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-300 mb-1">
+                Confirm Password
+              </label>
+              <select name="role" id="role" className="form-input" value={formData.role} onChange={handleChange}>
+                <option value="user" onChange={handleChange}>User</option>
+                <option value="admin" onChange={handleChange}>Admin</option>
+                <option value="moderator" onChange={handleChange}>Moderator</option>
+              </select>
             </div>
           </div>
 

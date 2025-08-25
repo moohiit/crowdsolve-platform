@@ -6,6 +6,7 @@ const signupSchema = Joi.object({
   name: Joi.string().min(3).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
+  role: Joi.string().required()
 });
 
 const loginSchema = Joi.object({
@@ -21,13 +22,13 @@ export const signup = async (req, res, next) => {
         .status(400)
         .json({ success: false, message: error.details[0].message });
 
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     let user = await User.findOne({ email });
     if (user) return res
       .status(400)
       .json({ success: false, message: "User already exists" });
 
-    user = new User({ name, email, password });
+    user = new User({ name, email, password, role });
     await user.save();
 
     const token = generateToken(user._id);
@@ -44,7 +45,7 @@ export const signup = async (req, res, next) => {
         success: true,
         message: "User created",
         token,
-        user: { id: user._id, name, email },
+        user: { id: user._id, name, email, role },
       });
   } catch (err) {
     next(err);
@@ -77,7 +78,7 @@ export const login = async (req, res, next) => {
       success:true,
       message: "Logged in",
       token,
-      user: { id: user._id, name: user.name, email },
+      user: { id: user._id, name: user.name, email, role: user.role },
     });
   } catch (err) {
     next(err);

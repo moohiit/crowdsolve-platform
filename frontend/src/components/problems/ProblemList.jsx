@@ -8,6 +8,7 @@ const ProblemList = () => {
   const { problems, loading, error } = useSelector(state => state.problems);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const { user } = useSelector(state => state.auth);
 
   useEffect(() => {
     fetchProblems();
@@ -35,7 +36,33 @@ const ProblemList = () => {
       dispatch(setError('Network error. Please try again.'));
     }
   };
-
+  const deleteProblem = async (problemId) => {
+      if (!window.confirm("Are you sure you want to delete this problem?")) {
+        return;
+      }
+  
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`/api/problems/${problemId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+  
+        const data = await response.json();
+  
+        if (data.success) {
+          // Remove the problem from the list
+          fetchProblems();
+        } else {
+          dispatch(setError(data.message));
+        }
+      } catch (error) {
+        dispatch(setError("Failed to delete problem. Please try again."));
+      }
+    };
   const loadMore = () => {
     setPage(prev => prev + 1);
   };
@@ -123,13 +150,35 @@ const ProblemList = () => {
                     </span>
                   </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-dark-700/50 space-x-2">
+                <div className="mt-4 pt-4 border-t border-dark-700/50 flex space-x-2">
                   <Link
                     to={`/problems/${problem._id}`}
                     className="btn-warning w-full text-center block"
                   >
                     View Details & Solutions
                   </Link>
+                  {user && (user._id === problem.reportedBy || user.role === "admin") && (
+                    <button
+                      onClick={() => deleteProblem(problem._id)}
+                      className="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-3 rounded-lg transition-colors"
+                      title="Delete Problem"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
