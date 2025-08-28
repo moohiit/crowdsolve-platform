@@ -9,6 +9,10 @@ import problemRoutes from "../backend/routes/problemRoutes.js";
 import solutionRoutes from "../backend/routes/solutionRoutes.js";
 import errorMiddleware from "../backend/middleware/errorMiddleware.js";
 import path from 'path';
+import http from "http";
+import { Server } from "socket.io";
+import socketSetup from "../backend/socket/socket.js";
+
 dotenv.config();
 
 const app = express();
@@ -42,6 +46,17 @@ app.use("/api/solutions", solutionRoutes);
 // Error handling
 app.use(errorMiddleware);
 
+// Socket.io setup
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: [process.env.CLIENT_URL, "http://localhost:5173"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+// ✅ Export io
+socketSetup(io);
 const PORT = process.env.PORT || 5000;
 // Start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

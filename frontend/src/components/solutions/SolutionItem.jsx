@@ -3,16 +3,25 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateSolutionUpvotes } from '../../store/slices/problemSlice';
 import CommentList from './CommentList';
-
+import socket from '../../socket/socket';
+import { useEffect } from 'react';
 const SolutionItem = ({ solution, problemId }) => {
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
   const [submittingUpvote, setSubmittingUpvote] = useState(false);
-  
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector(state => state.auth);
+  const { currentProblem } = useSelector(state => state.problems);
   
+  useEffect(()=>{
+    socket.emit('joinRoom', currentProblem.user._id)
+    console.log('joined room: ', currentProblem.user._id)
+    return ()=>{
+      socket.emit('leaveRoom', currentProblem.user._id)
+    }
+  }, [])
+
   const handleUpvote = async () => {
     if (!isAuthenticated) {
       alert('Please login to upvote solutions');
@@ -72,6 +81,15 @@ const SolutionItem = ({ solution, problemId }) => {
       const data = await response.json();
       
       if (data.success) {
+        // send notification to solution owner if commenter is not the owner
+        if( solution.user._id !== user.id){
+          // send notification using socket.io
+          socket.emit('sendNotification', {
+            userId: solution.user._id,
+            message: `${user.name} commented on your solution.`,
+            link: `/problems/${problemId}`
+          })
+        }
         setCommentText('');
         // Refresh comments by toggling visibility
         setShowComments(false);

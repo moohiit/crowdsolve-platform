@@ -39,7 +39,7 @@ export const createProblem = async (req, res, next) => {
 export const getProblems = async (req, res, next) => { 
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 6;
     const skip = (page - 1) * limit;
 
     // Get problems with user info
