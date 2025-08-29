@@ -76,10 +76,9 @@ function App() {
     // Listen once for notifications
     const handleNotification = (data) => {
       console.log("New notification received:", data);
-      // Dispatch Redux action or update state here
     };
-
-    socket.on("receiveNotification", handleNotification);
+    socket.emit('joinRoom', user?._id);
+    socket.on("newNotification", handleNotification);
 
     // Optional: listen for connection errors
     socket.on("connect_error", (err) => {
@@ -88,7 +87,7 @@ function App() {
 
     // Cleanup
     return () => {
-      socket.off("receiveNotification", handleNotification);
+      socket.off("newNotification", handleNotification);
       socket.off("connect_error");
       socket.disconnect();
     };

@@ -7,11 +7,12 @@ import connectDB from "../backend/config/db.js";
 import authRoutes from "../backend/routes/authRoutes.js";
 import problemRoutes from "../backend/routes/problemRoutes.js";
 import solutionRoutes from "../backend/routes/solutionRoutes.js";
+import notificationRoutes from "../backend/routes/notificationRoutes.js";
 import errorMiddleware from "../backend/middleware/errorMiddleware.js";
 import path from 'path';
 import http from "http";
 import { Server } from "socket.io";
-import socketSetup from "../backend/socket/socket.js";
+import { initSocket } from "../backend/socket/socket.js";
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.get(/^(?!\/api).*/, (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/problems", problemRoutes); // Pass upload middleware to routes needing it
 app.use("/api/solutions", solutionRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Error handling
 app.use(errorMiddleware);
@@ -55,8 +57,10 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+// ✅ Attach io to app so controllers can access it
+app.set("io", io);
 // ✅ Export io
-socketSetup(io);
+initSocket(io);
 const PORT = process.env.PORT || 5000;
 // Start server
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

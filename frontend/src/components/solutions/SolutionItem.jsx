@@ -83,12 +83,25 @@ const SolutionItem = ({ solution, problemId }) => {
       if (data.success) {
         // send notification to solution owner if commenter is not the owner
         if( solution.user._id !== user.id){
-          // send notification using socket.io
-          socket.emit('sendNotification', {
-            userId: solution.user._id,
-            message: `${user.name} commented on your solution.`,
-            link: `/problems/${problemId}`
-          })
+          // send notification to solution owner
+          const response = await fetch('/api/notifications', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              user: solution.user._id,
+              type: 'comment',
+              relatedItem: solution._id,
+              message: `${user.name} commented on your solution.`,
+            }),
+            credentials: 'include',
+          });
+          const data = await response.json();
+          if(data.success){
+            console.log('Notification sent');
+          }
         }
         setCommentText('');
         // Refresh comments by toggling visibility
