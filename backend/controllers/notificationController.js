@@ -13,6 +13,7 @@ export const createNotification = async (req, res) => {
     // Emit real-time notification via Socket.IO
     const io = req.app.get('io');
     io.to(user.toString()).emit('newNotification', notification);
+    console.log(`${message}`);
     res.status(201).json({ success: true, notification });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

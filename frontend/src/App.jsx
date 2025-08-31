@@ -20,6 +20,8 @@ import MyProblems from "./components/problems/MyProblems"; // Import the new com
 import Dashboard from "./components/dashboard/Dashboard";
 import UserDashboard from "./components/dashboard/UserDashboard";
 import socket from "./socket/socket";
+import Notification from "./components/common/Notification";
+import { newNotification } from "./store/slices/notificationSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -69,29 +71,28 @@ function App() {
   }, [dispatch, token]);
 
   useEffect(() => {
+    if (!user) return;
     socket.connect();
-
+    socket.emit('joinRoom', user?._id);
     console.log("Socket connected in App.jsx");
-
     // Listen once for notifications
     const handleNotification = (data) => {
       console.log("New notification received:", data);
+      dispatch(newNotification(data));
     };
-    socket.emit('joinRoom', user?._id);
     socket.on("newNotification", handleNotification);
 
     // Optional: listen for connection errors
     socket.on("connect_error", (err) => {
       console.error("Socket connection error:", err);
     });
-
     // Cleanup
     return () => {
       socket.off("newNotification", handleNotification);
       socket.off("connect_error");
       socket.disconnect();
     };
-  }, []);
+  }, [user]);
 
   return (
     <Router>
@@ -133,6 +134,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MyProblems />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notification />
                 </ProtectedRoute>
               }
             />

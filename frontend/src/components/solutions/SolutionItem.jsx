@@ -1,10 +1,8 @@
 // components/solutions/SolutionItem.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateSolutionUpvotes } from '../../store/slices/problemSlice';
 import CommentList from './CommentList';
-import socket from '../../socket/socket';
-import { useEffect } from 'react';
 const SolutionItem = ({ solution, problemId }) => {
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -12,15 +10,6 @@ const SolutionItem = ({ solution, problemId }) => {
   const [submittingUpvote, setSubmittingUpvote] = useState(false);
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector(state => state.auth);
-  const { currentProblem } = useSelector(state => state.problems);
-  
-  useEffect(()=>{
-    socket.emit('joinRoom', currentProblem.user._id)
-    console.log('joined room: ', currentProblem.user._id)
-    return ()=>{
-      socket.emit('leaveRoom', currentProblem.user._id)
-    }
-  }, [])
 
   const handleUpvote = async () => {
     if (!isAuthenticated) {
@@ -50,6 +39,28 @@ const SolutionItem = ({ solution, problemId }) => {
           solutionId: solution._id,
           upvotes: data.solution.upvotes,
         }));
+        // send notification to solution owner if commenter is not the owner
+        if (solution.user._id !== user._id && data.solution.upvotes.includes(user._id)) {
+          // send notification to solution owner
+          const response = await fetch('/api/notifications', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              user: solution.user._id,
+              type: 'upvote',
+              relatedItem: solution._id,
+              message: `${user.name} upvoted your solution.`,
+            }),
+            credentials: 'include',
+          });
+          const data = await response.json();
+          if (data.success) {
+            console.log('Notification sent');
+          }
+        }
       }
     } catch (error) {
       console.error('Failed to upvote:', error);
@@ -82,7 +93,7 @@ const SolutionItem = ({ solution, problemId }) => {
       
       if (data.success) {
         // send notification to solution owner if commenter is not the owner
-        if( solution.user._id !== user.id){
+        if( solution.user._id !== user._id){
           // send notification to solution owner
           const response = await fetch('/api/notifications', {
             method: 'POST',
@@ -115,7 +126,7 @@ const SolutionItem = ({ solution, problemId }) => {
     }
   };
   
-  const isUpvoted = user && solution.upvotes.includes(user.id);
+  const isUpvoted = user && solution.upvotes.includes(user._id);
   
   return (
     <div className="bg-dark-700/30 rounded-lg p-4 mb-4 border border-dark-600/30">

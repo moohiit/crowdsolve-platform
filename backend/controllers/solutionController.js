@@ -87,7 +87,7 @@ export const getComments = async (req, res, next) => {
   try {
     const comments = await Comment.find({
       solution: req.params.solutionId,
-    }).populate("user", "name");
+    }).populate("user", "name").sort({createdAt:-1});
     res.status(200).json({success:true,comments});
   } catch (err) {
     next(err);
