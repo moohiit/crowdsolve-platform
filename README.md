@@ -1,6 +1,9 @@
 # CrowdSolve Platform
 
 CrowdSolve is a full-stack web application for community-driven problem reporting and solution sharing. Users can report local problems, suggest solutions, upvote solutions, and discuss via comments.
+## Demo
+
+You can try the live demo at [https://crowdsolve-platform-jp41.onrender.com](https://crowdsolve-platform-jp41.onrender.com).
 
 ## Project Structure
 

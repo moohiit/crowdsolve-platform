@@ -21,15 +21,32 @@ import Dashboard from "./components/dashboard/Dashboard";
 import UserDashboard from "./components/dashboard/UserDashboard";
 import socket from "./socket/socket";
 import Notification from "./components/common/Notification";
-import { newNotification } from "./store/slices/notificationSlice";
+import { addNotifications, newNotification } from "./store/slices/notificationSlice";
 
 function App() {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.auth);
-
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch("/api/notifications", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        dispatch(addNotifications(data.notifications));
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
   // Verify token on app load and page refresh
   useEffect(() => {
+
     const verifyToken = async () => {
       if (token) {
         try {
@@ -57,6 +74,7 @@ function App() {
                 token: token,
               })
             );
+            fetchNotifications();
           } else {
             dispatch(logout());
           }
